@@ -1,0 +1,10 @@
+({
+	validateRequiredFields : function(component){
+         var allValid = component.find('formPere').reduce(function (validSoFar, inputCmp) {
+            inputCmp.showHelpMessageIfInvalid();
+            return validSoFar && !inputCmp.get('v.validity').valueMissing;
+        }, true);
+        
+        return allValid;
+    }
+})
