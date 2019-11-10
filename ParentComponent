@@ -1,0 +1,16 @@
+.THIS {
+}
+.THIS label.uiLabel {
+    padding-left: 12px;
+    margin-left: 12px;
+}
+.THIS .field{
+  padding: 5px;
+  border: 1px solid #dce4ec;
+  border-radius: 2px;
+}
+.THIS .tableC{
+     border: 1px solid black;
+}
+
+ 
