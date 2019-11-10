@@ -1,0 +1,193 @@
+({
+
+   NombreEnfantselected : function(component, event, helper) {
+        var listEnfant = [];
+        var nbrEnfant = component.find("nbrenfant");
+        var body = component.get("v.body");
+        if(nbrEnfant != null && nbrEnfant != undefined  && nbrEnfant.get("v.value") != null && nbrEnfant.get("v.value") != ''){
+           console.log('OKKKK'+nbrEnfant);
+           console.log('-----');
+            var nbr=component.find("nbrenfant").get("v.value");
+            console.log('-----'+nbr);
+			/*var nbrenfants = component.find("nbrenfant").get("v.value");
+			listEnfant.length = nbrenfants;
+            component.set('v.etat',true);
+            component.set('v.nombreEnfantselected',listEnfant);
+            */
+            
+        console.log('Contactform'+	nbr);
+        component.set("v.body", '');
+        for (var i = 0; i < nbr ; i++) {
+            
+            $A.createComponents([
+                ["ui:inputText",
+                {
+                   
+                    "label":'Nom',
+                    "aura:id":'Nom'+i,
+                    "name":'Nom'+(i+1),
+                    "value" : '',
+                    "required":'true',
+                    "placeholder":'Nom enfant '+(i+1),
+                    "class":'field'
+                    
+                }],
+                ["ui:inputText",
+                {
+                   
+                    "label":'Prenom',
+                    "aura:id":'Prenom'+i,
+                    "name":'Prenom'+(i+1),
+                    "value" : '',
+                    "required":'true',
+                    "placeholder":'Prénom enfant '+(i+1),
+                    "class":'field'
+                }],
+                ["ui:inputText",
+                {
+                    "label":'Age',
+                    "aura:id":'Age'+i,
+                    "name":'Age'+(i+1),
+                    "value" : '',
+                    "required":'true',
+                    "placeholder":'Age enfant '+(i+1),
+                    "class":'field'
+                }]
+                ],
+                function(newcmps,status,statusMessageList){
+                    console.log(newcmps);
+                    //Add the new button to the body array
+                    if (component.isValid()) {
+                        console.log('cmp is valid');
+                        var body = component.get("v.body");
+                        body.push(newcmps[0]);
+                        body.push(newcmps[1]);
+                        body.push(newcmps[2]);
+                        component.set("v.body", body);
+                    }
+                }
+            );
+        }
+        component.set('v.etat',true);
+        //afficher boutton suivant
+        var clickshowlast = component.find("clickshowlast");
+        $A.util.removeClass(clickshowlast, "slds-hide");
+        $A.util.addClass(clickshowlast, "slds-show");            
+        } else{
+            listEnfant.length = 0;
+            component.set('v.etat',false);
+            component.set("v.body", ''); 
+        }        
+    }
+    ,
+    //Action to view chields block
+    clickShow: function(component, event, helper) {
+       var validateFromParent= helper.validateRequiredFields(component);
+        console.log('validateFromParent  :'+validateFromParent);
+        if(validateFromParent){
+            var contact = component.get("v.ContactInstance");
+         //   component.set("v.Contact", contact);
+            console.log("Create contact: " + JSON.stringify(contact));
+            console.log('Daaaz validé');
+            var FormParent = component.find("FormParent");
+            $A.util.removeClass(FormParent, "slds-hide");
+         	$A.util.addClass(FormParent, "slds-hide");
+    		console.log('OK DAZ verification');
+            var Formenfants = component.find("Formenfants");
+            $A.util.removeClass(Formenfants, "slds-hide");
+         	$A.util.addClass(Formenfants, "slds-show");
+             var body = component.get("v.body");
+             component.set("v.body", '');
+        }
+    },
+      //Action back to Contact Block A
+    clickBack : function(component, event, helper) {
+        var listEnfant = [];
+        var formParent = component.find("FormParent");
+        $A.util.removeClass(formParent, "slds-hide");
+        var formenfants = component.find("Formenfants");
+        $A.util.removeClass(formenfants, "slds-hide");
+        $A.util.addClass(formenfants, "slds-hide");
+        listEnfant.length = 0;
+        component.set('v.etat',false);
+        component.set('v.nombreEnfantselected',listEnfant);
+        component.set('v.option','');
+        console.log('Size '+component.get('v.nombreEnfantselected'));
+       
+    },
+    
+    //Action to view all Details block
+    clicknext : function(component, event, helper) {
+        	var ContactEnfant = [];
+        	var erreur =false;
+        	var message='';
+        	var Nombreenfant = component.find("nbrenfant").get("v.value"); 
+            for (var i = 0; i < Nombreenfant ; i++) {
+                if(component.find("Nom"+i) !=null && component.find("Nom"+i) != undefined && component.find("Prenom"+i) !=null && component.find("Prenom"+i) != undefined && component.find("Prenom"+i) !=null && component.find("Prenom"+i) != undefined){
+                    var Nom = component.find("Nom"+i).get("v.value");
+                	var Prenom = component.find("Prenom"+i).get("v.value");
+                	var Age = component.find("Age"+i).get("v.value");
+                    if(Nom !='' && Prenom !='' && parseInt(Age)){
+                		var enfant = {Name: Nom, prenom__c: Prenom, Age__c: Age};
+                		ContactEnfant.push(enfant);  
+                        console.log(ContactEnfant);
+                        console.log('---'+ContactEnfant.length);
+                        
+                    }else if(Nom == '' && Prenom =='' && !parseInt(Age) ){
+                         erreur=true;
+                        message='veuillez corriger le(s) coordonnées';
+                    }else if(Nom == '' || Prenom ==''){
+                        erreur=true;
+                        message='veuillez corriger le(s) noms() ou le(s) prenom(s)';
+                    }else if(!parseInt(Age)){
+                        erreur=true;
+                        message= 'l\'age est incorrect';  
+                    }
+                     
+                }else{
+                    console.log('IS NOT OK');
+                }
+            }
+        if(erreur){
+            alert(message);
+        }
+        
+        console.log('IS OKKKKKK');
+        if(ContactEnfant.length>0){
+            console.log('------------------------------------------------------');
+            console.log('ContactEnfant '+JSON.stringify(ContactEnfant));
+            component.set("v.EnfantInstances", ContactEnfant);
+            component.set("v.isOpen", true);
+            
+            console.log('IS OK ALL TRAI1');
+            var contact = component.get("v.EnfantInstances");
+            console.log('ContactEnfant '+JSON.stringify(contact));
+            var formChields = component.find("Formenfants");
+            $A.util.removeClass(formChields, "slds-hide");
+         	$A.util.addClass(formChields, "slds-hide");
+    		console.log('OK DAZ verification');
+            var recaptulatif = component.find("Recptulatif");
+            $A.util.removeClass(recaptulatif, "slds-hide");
+         	$A.util.addClass(recaptulatif, "slds-show");
+            console.log('IS OK ALL TRAI');
+        }
+ 
+    }, 
+    finish :  function(component, event, helper) {
+        var contact =  JSON.stringify(component.get("v.ContactInstance"));
+        console.log('__'+contact);
+        var enfants = JSON.stringify(component.get("v.EnfantInstances"));
+        console.log('_--_'+enfants);
+        
+         var action = component.get("c.saveContact");
+         action.setParams({
+            "contact": contact,
+            "enfants": enfants
+         });
+        
+          $A.enqueueAction(action);
+        console.log('Alll is OK');
+        alert('les données sont ajouté avec sucssé');
+      
+    }
+})
