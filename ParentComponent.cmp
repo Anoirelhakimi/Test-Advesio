@@ -1,0 +1,114 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" controller="SaveChield">
+    <aura:attribute name="contList" type="list[]"/>
+    <aura:attribute name="EnfantInstances" type="enfant__c[]" access="global" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="Contact" type="Contact"/>
+    <aura:attribute name="ContactInstance" type="Contact" default="{
+                        'FirstName': '',
+                        'LastName': '',
+                        'Email': '',
+                        'Title': ''
+                        }" access="global" />
+    <aura:attribute name="EnfantInstance" type="enfant__c" default="{ 'sobjectType': 'enfant__c',
+                        'Name': 'RRRRE',
+                        'prenom__c': 'BBBB',
+                        'Age__c': '10'
+                        }" />
+    <aura:attribute name="nombreEnfant" type="list[]" default="[1,2,3,4,5]"/>
+    <aura:attribute name="nombreEnfantselected" type="list[]" access="global" />
+    <aura:attribute name="etat" type="Boolean" />
+    <aura:attribute name="etat1" type="Boolean" />
+    <aura:attribute name="option" type="string" default=""/>
+    
+	<form class="slds-form--stacked" aura:id="ALLForm">
+      
+        <div aura:id="FormParent"  class="slds-media__body slds-show" > 
+              <h3>Détails du Contact</h3>
+            <lightning:input aura:id="formPere" label="Nom du pere"
+                             name="NomPere"
+                             value="{!v.ContactInstance.LastName}" required="true" placeholder="Nom"/> 
+            <lightning:input aura:id="formPere" label="Prénom du pere"
+                             name="Prenom"
+                             value="{!v.ContactInstance.FirstName}" required="true" placeholder="Prenom"/>
+            <lightning:input aura:id="formPere" label="Titre"
+                             name="Titre"
+                             value="{!v.ContactInstance.Title}" required="true" placeholder="Titre"/>
+            <lightning:input aura:id="formPere" label="Email"
+                             name="email" 
+                             value="{!v.ContactInstance.Email}" required="true" placeholder="Veuillez saisir votre addresse Email"  messageWhenPatternMismatch="Veuillez saisir votre addresse Email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  />
+            <lightning:button label="Suivant" 
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.clickShow}"/>
+      </div>
+      <div aura:id="Formenfants" class="slds-hide">
+          <h3>Détails du enfants</h3>
+        <lightning:select aura:id="nbrenfant" label="Veulliez selectioner le nombre d'enfant" name="nbrenfant" value="{!v.option}" onchange="{!c.NombreEnfantselected}">
+            <option value="">selectionner votre nombre d'enfant</option>
+            <aura:iteration items="{!v.nombreEnfant}" var="enfant">
+                 <option value="{!enfant}">{!enfant}</option>
+            </aura:iteration>
+       </lightning:select> 
+         <div>
+          		{!v.body} 
+         </div>
+         
+        
+             <lightning:button label="Précedent" 
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.clickBack}"/>
+          <aura:if isTrue="{!v.etat == True}">
+             <lightning:button label="Suivant" 
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.clicknext}"/>
+             
+                <h3>* Veuillez remplir tous les champs avec des valeurs valide</h3> 
+             
+         </aura:if> 
+        </div>
+        
+        <div aura:id="Recptulatif" class="slds-hide">
+			
+          <aura:if isTrue="{!v.isOpen == True}"> 
+               <h1>Récapitulatif</h1>
+            	<table>
+                	<tr>
+                        <td>Nom : </td>
+                        <td>{!v.ContactInstance.FirstName}</td>
+                    </tr>
+                    <tr>
+                        <td>Prénom :</td>
+                        <td>{!v.ContactInstance.LastName}</td>
+                    </tr>
+                    <tr>
+                        <td>Title : </td>
+                        <td>{!v.ContactInstance.Title}</td>
+                    </tr>
+                    <tr>
+                        <td>Email : </td>
+                        <td>{!v.ContactInstance.Email}</td>
+                    </tr>
+                </table> 
+               
+           <table class="tableC"> 
+               <tr><td colspan="3"></td> <td colspan="2"> Nom</td> <td colspan="2"> Prénom</td><td colspan="2"> Age</td></tr>
+               <aura:iteration items="{!v.EnfantInstances}" var="enfantInf" >
+                   <tr><td colspan="3">Enfant </td> <td colspan="2">{!enfantInf.Name}</td> <td colspan="2"> {!enfantInf.prenom__c}</td><td colspan="2"> {!enfantInf.Age__c}</td></tr>
+               </aura:iteration>
+           </table> 
+              
+              <lightning:button label="Submit" 
+                              class="slds-m-top--medium"
+                              variant="brand"
+                              onclick="{!c.finish}"/>
+        </aura:if>
+        </div>
+    		
+    </form>
+
+   
+    
+    
+</aura:component>
