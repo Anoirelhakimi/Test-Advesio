@@ -1,0 +1,16 @@
+<apex:page showHeader="false" standardStylesheets="false"> 
+ <apex:includeLightning />
+ <div style="width:100%;height:100px;" id="lexContainer"> 
+     <div style="height:6rem;" id="divEnfantApp" />
+ </div>
+
+ <script>
+ $Lightning.use("c:ParentApp", function() {
+        $Lightning.createComponent("c:ParentComponent",
+        {},"lexContainer",
+    function(cmp) {
+    document.getElementById("divEnfantApp").style.display = 'none'; 
+        });
+    });
+ </script> 
+</apex:page>
